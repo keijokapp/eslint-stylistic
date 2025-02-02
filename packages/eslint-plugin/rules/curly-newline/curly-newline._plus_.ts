@@ -170,28 +170,28 @@ export default createRule<RuleOptions, MessageIds>({
 
       let openBrace: Token
       let closeBrace: Token
-      let elementCount: number
+      let elementCount: number = sourceCode.getCommentsInside(node).length
 
       switch (node.type) {
         case 'SwitchStatement':
           closeBrace = sourceCode.getLastToken(node)!
           openBrace = sourceCode.getTokenBefore(node.cases.length ? node.cases[0] : closeBrace)!
-          elementCount = node.cases.length
+          elementCount += node.cases.length
           break
         case 'StaticBlock':
           openBrace = sourceCode.getFirstToken(node, token => token.value === '{')!
           closeBrace = sourceCode.getLastToken(node)!
-          elementCount = node.body.length
+          elementCount += node.body.length
           break
         case 'TSEnumBody':
           openBrace = sourceCode.getFirstToken(node)!
           closeBrace = sourceCode.getLastToken(node)!
-          elementCount = node.members.length
+          elementCount += node.members.length
           break
         default:
           openBrace = sourceCode.getFirstToken(node)!
           closeBrace = sourceCode.getLastToken(node)!
-          elementCount = (node as any).body.length
+          elementCount += (node as any).body.length
       }
 
       let first = sourceCode.getTokenAfter(openBrace, { includeComments: true })!

@@ -95,6 +95,8 @@ test({ minElements: 2 }, '{\n}', '{}', { line: 1, column: 1, messageId: 'unexpec
 test({ minElements: 2 }, '{\nvoid {}\n}', '{void {}}', { line: 1, column: 1, messageId: 'unexpectedLinebreakAfterOpeningBrace' }, { line: 3, column: 1, messageId: 'unexpectedLinebreakBeforeClosingBrace' })
 test({ minElements: 2 }, '{void {};void {}}', '{\nvoid {};void {}\n}', { line: 1, column: 1, messageId: 'expectedLinebreakAfterOpeningBrace' }, { line: 1, column: 17, messageId: 'expectedLinebreakBeforeClosingBrace' })
 
+test({ minElements: 2 }, '{/**//**/}', null, { line: 1, column: 1, messageId: 'expectedLinebreakAfterOpeningBrace' }, { line: 1, column: 10, messageId: 'expectedLinebreakBeforeClosingBrace' })
+
 // "multiline" and "minElements" --------------------------------------
 test({ multiline: true, minElements: 2 }, '{}')
 test({ multiline: true, minElements: 2 }, '{void 0}')
