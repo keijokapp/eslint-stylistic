@@ -30,48 +30,48 @@ const optionValueSchema: JSONSchema.JSONSchema4 = {
   ],
 }
 
-enum Specialization {
+const specializations = [
   // if
-  IfStatementConsequent = 'IfStatementConsequent',
-  IfStatementAlternative = 'IfStatementAlternative',
+  'IfStatementConsequent',
+  'IfStatementAlternative',
 
   // loops
-  DoWhileStatement = 'DoWhileStatement',
-  ForInStatement = 'ForInStatement',
-  ForOfStatement = 'ForOfStatement',
-  ForStatement = 'ForStatement',
-  WhileStatement = 'WhileStatement',
+  'DoWhileStatement',
+  'ForInStatement',
+  'ForOfStatement',
+  'ForStatement',
+  'WhileStatement',
 
   // switch-case
-  SwitchStatement = 'SwitchStatement',
-  SwitchCase = 'SwitchCase',
+  'SwitchStatement',
+  'SwitchCase',
 
   // try
-  TryStatementBlock = 'TryStatementBlock',
-  TryStatementHandler = 'TryStatementHandler',
-  TryStatementFinalizer = 'TryStatementFinalizer',
+  'TryStatementBlock',
+  'TryStatementHandler',
+  'TryStatementFinalizer',
 
   // lone block
-  BlockStatement = 'BlockStatement',
+  'BlockStatement',
 
   // functions
-  ArrowFunctionExpression = 'ArrowFunctionExpression',
-  FunctionDeclaration = 'FunctionDeclaration',
-  FunctionExpression = 'FunctionExpression',
-  Property = 'Property',
+  'ArrowFunctionExpression',
+  'FunctionDeclaration',
+  'FunctionExpression',
+  'Property',
 
   // block-like
-  ClassBody = 'ClassBody',
-  StaticBlock = 'StaticBlock',
+  'ClassBody',
+  'StaticBlock',
 
   // misc
-  WithStatement = 'WithStatement',
+  'WithStatement',
 
   // typescript
-  TSEnumBody = 'TSEnumBody',
-  TSInterfaceBody = 'TSInterfaceBody',
-  TSModuleBlock = 'TSModuleBlock',
-};
+  'TSEnumBody',
+  'TSInterfaceBody',
+  'TSModuleBlock',
+] as const
 
 const presets = {
   default: { multiline: false, minElements: Number.POSITIVE_INFINITY, consistent: true },
@@ -100,12 +100,12 @@ function normalizeOptionValue(value: any) {
 }
 
 function normalizeOptions(options: any): {
-  [k in keyof typeof Specialization]: { multiline: boolean, minElements: number, consistent: boolean }
+  [k in typeof specializations[number]]: { multiline: boolean, minElements: number, consistent: boolean }
 } {
   const value = normalizeOptionValue(options)
 
   return Object.fromEntries(
-    Object.entries(Specialization).map(([k]) => [
+    specializations.map(k => [
       k,
       typeof options === 'object' && options != null && k in options ? normalizeOptionValue(options[k]) : value,
     ]),
@@ -131,7 +131,7 @@ export default createRule<RuleOptions, MessageIds>({
           {
             type: 'object',
             properties: {
-              ...Object.fromEntries(Object.entries(Specialization).map(([k]) => [k, optionValueSchema])),
+              ...Object.fromEntries(specializations.map(k => [k, optionValueSchema])),
               ...commonProperties,
             },
             additionalProperties: false,
@@ -164,7 +164,7 @@ export default createRule<RuleOptions, MessageIds>({
         | Tree.TSEnumBody
         | Tree.TSInterfaceBody
         | Tree.TSModuleBlock,
-      specialization: keyof typeof Specialization,
+      specialization: typeof specializations[number],
     ) {
       const options = normalizedOptions[specialization]
 
